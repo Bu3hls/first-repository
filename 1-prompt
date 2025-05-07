@@ -1,0 +1,326 @@
+import { useState } from 'react';
+import { Home, Search, Users, Menu, Settings, User, Calendar, Activity, BarChart, Info } from 'lucide-react';
+
+export default function WorkoutApp() {
+  const [activeTab, setActiveTab] = useState('home');
+  const [menuOpen, setMenuOpen] = useState(false);
+  
+  const renderContent = () => {
+    switch(activeTab) {
+      case 'home':
+        return <HomeScreen />;
+      case 'search':
+        return <SearchScreen />;
+      case 'social':
+        return <SocialScreen />;
+      case 'menu':
+        return <MenuScreen menuOpen={menuOpen} setMenuOpen={setMenuOpen} />;
+      default:
+        return <HomeScreen />;
+    }
+  };
+  
+  return (
+    <div className="flex flex-col h-screen bg-gray-100">
+      {/* App content area */}
+      <div className="flex-1 overflow-auto">
+        {renderContent()}
+      </div>
+      
+      {/* Bottom navigation bar */}
+      <div className="bg-white border-t border-gray-200">
+        <div className="flex justify-around items-center h-16">
+          <TabButton 
+            icon={<Home />} 
+            label="Home" 
+            active={activeTab === 'home'} 
+            onClick={() => setActiveTab('home')} 
+          />
+          <TabButton 
+            icon={<Search />} 
+            label="Search" 
+            active={activeTab === 'search'} 
+            onClick={() => setActiveTab('search')} 
+          />
+          <TabButton 
+            icon={<Users />} 
+            label="Social" 
+            active={activeTab === 'social'} 
+            onClick={() => setActiveTab('social')} 
+          />
+          <TabButton 
+            icon={<Menu />} 
+            label="Menu" 
+            active={activeTab === 'menu'} 
+            onClick={() => setActiveTab('menu')} 
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TabButton({ icon, label, active, onClick }) {
+  return (
+    <button 
+      className={`flex flex-col items-center justify-center w-full py-1 ${active ? 'text-blue-500' : 'text-gray-500'}`}
+      onClick={onClick}
+    >
+      <div className="mb-1">
+        {icon}
+      </div>
+      <span className="text-xs">{label}</span>
+    </button>
+  );
+}
+
+function HomeScreen() {
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-6">FitTrack</h1>
+      
+      <div className="bg-white rounded-lg shadow p-4 mb-4">
+        <h2 className="text-lg font-medium mb-2">Today's Workout</h2>
+        <div className="bg-blue-50 p-3 rounded-lg mb-3">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">Upper Body</h3>
+              <p className="text-sm text-gray-600">45 min · Strength</p>
+            </div>
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+              Start
+            </button>
+          </div>
+        </div>
+        
+        <button className="text-blue-500 text-sm font-medium flex items-center">
+          <Calendar className="h-4 w-4 mr-1" />
+          View workout schedule
+        </button>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow p-4 mb-4">
+        <h2 className="text-lg font-medium mb-2">Progress</h2>
+        <div className="flex justify-between mb-2">
+          <div className="text-center">
+            <p className="text-sm text-gray-600">Workouts</p>
+            <p className="font-bold text-lg">12</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-600">Hours</p>
+            <p className="font-bold text-lg">8.5</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-gray-600">Calories</p>
+            <p className="font-bold text-lg">3,540</p>
+          </div>
+        </div>
+        <div className="h-32 bg-gray-100 rounded-lg flex items-center justify-center">
+          <BarChart className="h-16 w-16 text-gray-400" />
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow p-4">
+        <h2 className="text-lg font-medium mb-2">Recent Activity</h2>
+        <div className="border-b pb-2 mb-2">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">Leg Day</h3>
+              <p className="text-sm text-gray-600">Yesterday · 50 min</p>
+            </div>
+            <Activity className="text-green-500" />
+          </div>
+        </div>
+        <div className="border-b pb-2 mb-2">
+          <div className="flex justify-between items-center">
+            <div>
+              <h3 className="font-medium">HIIT Cardio</h3>
+              <p className="text-sm text-gray-600">2 days ago · 30 min</p>
+            </div>
+            <Activity className="text-green-500" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SearchScreen() {
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Find Workouts</h1>
+      
+      <div className="relative mb-6">
+        <input
+          type="text"
+          placeholder="Search workouts, exercises..."
+          className="w-full p-3 pl-10 bg-white border border-gray-300 rounded-lg"
+        />
+        <Search className="absolute left-3 top-3 text-gray-400" />
+      </div>
+      
+      <h2 className="text-lg font-medium mb-3">Categories</h2>
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <CategoryBox title="Strength" icon={<Activity />} color="bg-red-100" textColor="text-red-600" />
+        <CategoryBox title="Cardio" icon={<Activity />} color="bg-blue-100" textColor="text-blue-600" />
+        <CategoryBox title="Yoga" icon={<Activity />} color="bg-green-100" textColor="text-green-600" />
+        <CategoryBox title="HIIT" icon={<Activity />} color="bg-purple-100" textColor="text-purple-600" />
+      </div>
+      
+      <h2 className="text-lg font-medium mb-3">Trending Workouts</h2>
+      <div className="space-y-3">
+        <WorkoutItem 
+          title="Full Body Strength" 
+          duration="45 min" 
+          level="Intermediate" 
+          image="/api/placeholder/100/80"
+        />
+        <WorkoutItem 
+          title="30-Min HIIT Challenge" 
+          duration="30 min" 
+          level="Advanced" 
+          image="/api/placeholder/100/80"
+        />
+        <WorkoutItem 
+          title="Morning Yoga Flow" 
+          duration="20 min" 
+          level="Beginner" 
+          image="/api/placeholder/100/80"
+        />
+      </div>
+    </div>
+  );
+}
+
+function CategoryBox({ title, icon, color, textColor }) {
+  return (
+    <div className={`${color} ${textColor} p-4 rounded-lg flex flex-col items-center justify-center`}>
+      <div className="mb-2">
+        {icon}
+      </div>
+      <span className="font-medium">{title}</span>
+    </div>
+  );
+}
+
+function WorkoutItem({ title, duration, level, image }) {
+  return (
+    <div className="bg-white rounded-lg p-3 flex">
+      <img src={image} alt={title} className="w-20 h-16 rounded-md mr-3" />
+      <div className="flex-1">
+        <h3 className="font-medium">{title}</h3>
+        <div className="flex text-sm text-gray-600">
+          <span className="mr-3">{duration}</span>
+          <span>{level}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SocialScreen() {
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Community</h1>
+      
+      <div className="bg-white rounded-lg shadow p-4 mb-4">
+        <div className="flex items-center mb-3">
+          <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+          <div>
+            <p className="font-medium">Sarah J.</p>
+            <p className="text-xs text-gray-600">2 hours ago</p>
+          </div>
+        </div>
+        <p className="mb-3">Just completed the 30-day strength challenge! Feeling stronger than ever! 💪</p>
+        <div className="bg-gray-100 h-40 rounded-lg mb-3 flex items-center justify-center">
+          <img src="/api/placeholder/300/160" alt="Workout completion" className="rounded-lg" />
+        </div>
+        <div className="flex justify-between text-gray-600">
+          <button className="flex items-center">
+            <Activity className="h-4 w-4 mr-1" />
+            <span>Like (24)</span>
+          </button>
+          <button className="flex items-center">
+            <Info className="h-4 w-4 mr-1" />
+            <span>Comment (5)</span>
+          </button>
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow p-4 mb-4">
+        <div className="flex items-center mb-3">
+          <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
+          <div>
+            <p className="font-medium">Mike T.</p>
+            <p className="text-xs text-gray-600">Yesterday</p>
+          </div>
+        </div>
+        <p className="mb-3">New PR on bench press today! Any tips for improving my form?</p>
+        <div className="flex justify-between text-gray-600">
+          <button className="flex items-center">
+            <Activity className="h-4 w-4 mr-1" />
+            <span>Like (12)</span>
+          </button>
+          <button className="flex items-center">
+            <Info className="h-4 w-4 mr-1" />
+            <span>Comment (8)</span>
+          </button>
+        </div>
+      </div>
+      
+      <h2 className="text-lg font-medium mb-3">Challenges</h2>
+      <div className="bg-white rounded-lg shadow p-4">
+        <h3 className="font-medium mb-2">30-Day Core Challenge</h3>
+        <p className="text-sm text-gray-600 mb-2">156 participants · 8 days left</p>
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+          <div className="bg-blue-500 h-2 rounded-full w-3/4"></div>
+        </div>
+        <button className="bg-blue-500 text-white w-full py-2 rounded-lg">Join Challenge</button>
+      </div>
+    </div>
+  );
+}
+
+function MenuScreen({ menuOpen, setMenuOpen }) {
+  const menuItems = [
+    { icon: <User />, label: "Profile" },
+    { icon: <Settings />, label: "Settings" },
+    { icon: <Calendar />, label: "Workout History" },
+    { icon: <Activity />, label: "Goals & Progress" },
+    { icon: <Info />, label: "Help & Support" },
+  ];
+
+  return (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-6">Menu</h1>
+      
+      <div className="bg-white rounded-lg shadow p-4 mb-6">
+        <div className="flex items-center">
+          <div className="w-16 h-16 bg-gray-300 rounded-full mr-4"></div>
+          <div>
+            <h2 className="text-xl font-bold">Alex Johnson</h2>
+            <p className="text-gray-600">Premium Member</p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow">
+        {menuItems.map((item, index) => (
+          <div 
+            key={index} 
+            className={`flex items-center p-4 ${index < menuItems.length - 1 ? 'border-b border-gray-100' : ''}`}
+          >
+            <div className="mr-3 text-gray-500">
+              {item.icon}
+            </div>
+            <span>{item.label}</span>
+          </div>
+        ))}
+      </div>
+      
+      <button className="mt-6 w-full py-3 bg-red-500 text-white rounded-lg">
+        Sign Out
+      </button>
+    </div>
+  );
+}
